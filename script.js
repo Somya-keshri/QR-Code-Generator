@@ -13,9 +13,13 @@ let historyList = document.getElementById("historyList");
 let canvas = document.getElementById("qrCanvas");
 let ctx = canvas.getContext("2d");
 
-/* ✅ ADDED */
+/*  ADDED */
 let shareBtn = document.getElementById("shareBtn");
 
+let startScanBtn = document.getElementById("startScanBtn");
+let stopScanBtn = document.getElementById("stopScanBtn");
+
+let scanner = null; // global scanner instance
 
 // Load QR history
 let qrHistory = JSON.parse(localStorage.getItem("qrHistory")) || [];
@@ -299,3 +303,150 @@ if (shareBtn) {
   });
 
 }
+
+/* =========================
+   QR SCANNER
+========================= */
+
+function startScanner() {
+
+  const scanner = new Html5Qrcode("reader");
+
+  scanner.start(
+    { facingMode: "environment" }, // back camera
+    {
+      fps: 10,
+      qrbox: 250
+    },
+    (decodedText) => {
+
+  const resultBox = document.getElementById("scanResult");
+
+  // Check if it's a URL
+  if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
+
+    let label = "🔗 Website";
+
+    if (decodedText.includes("docs.google.com/forms")) {
+      label = "📄 Google Form";
+    }
+
+    resultBox.innerHTML = `
+      <div style="
+        background: rgba(255,255,255,0.1);
+        padding: 12px;
+        border-radius: 10px;
+        margin-top: 10px;
+        text-align: center;
+      ">
+        <p style="font-weight: 600;">${label}</p>
+        <a href="${decodedText}" target="_blank" style="
+          color: #6366f1;
+          text-decoration: none;
+          word-break: break-all;
+        ">
+          Open Link
+        </a>
+      </div>
+    `;
+
+  } else {
+
+    // Normal text
+    resultBox.innerHTML = `
+      <div style="
+        background: rgba(255,255,255,0.1);
+        padding: 12px;
+        border-radius: 10px;
+        margin-top: 10px;
+      ">
+        <p>${decodedText}</p>
+      </div>
+    `;
+
+  }
+
+  scanner.stop();
+},
+    (errorMessage) => {
+      // ignore scan errors
+    }
+  ).catch(err => {
+    console.log("Camera error:", err);
+  });
+}
+
+// Start scanner (optional)
+function startScanner() {
+
+  if (scanner) return; // already running
+
+  scanner = new Html5Qrcode("reader");
+
+  scanner.start(
+    { facingMode: "environment" },
+    {
+      fps: 10,
+      qrbox: 250
+    },
+    (decodedText) => {
+
+      // your existing result logic stays SAME
+
+      const resultBox = document.getElementById("scanResult");
+
+      if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
+
+        let label = "🔗 Website";
+
+        if (decodedText.includes("docs.google.com/forms")) {
+          label = "📄 Google Form";
+        }
+
+        resultBox.innerHTML = `
+          <div style="padding:10px;border-radius:10px;">
+            <p>${label}</p>
+            <a href="${decodedText}" target="_blank">Open Link</a>
+          </div>
+        `;
+
+      } else {
+        resultBox.innerHTML = `<p>${decodedText}</p>`;
+      }
+
+    },
+    (errorMessage) => {}
+  ).then(() => {
+    startScanBtn.disabled = true;
+    stopScanBtn.disabled = false;
+  }).catch(err => {
+    console.log(err);
+  });
+
+}
+
+
+// Stop scanner (optional)
+function stopScanner() {
+
+  if (scanner) {
+
+    scanner.stop().then(() => {
+      scanner.clear();
+      scanner = null;
+
+      startScanBtn.disabled = false;
+      stopScanBtn.disabled = true;
+
+      document.getElementById("reader").innerHTML = "";
+
+    }).catch(err => {
+      console.log(err);
+    });
+
+  }
+
+}
+
+startScanBtn.addEventListener("click", startScanner);
+stopScanBtn.addEventListener("click", stopScanner);

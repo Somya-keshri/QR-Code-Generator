@@ -21,13 +21,23 @@ body {
 
 /* LIGHT THEME BACKGROUND (soft white) */
 body[data-theme="light"] {
-    background: #c7d6e6;
-    /* soft white (not harsh white) */
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+        url("images/image_light.jpg") no-repeat center center fixed;
+
+    background-size: cover;
+    background-attachment: fixed;
 }
+    /* soft white (not harsh white) */
 
 /* DARK THEME BACKGROUND */
 body[data-theme="dark"] {
-    background: #131e37;
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+        url("images/image_new_dark.png") no-repeat center center fixed;
+
+    background-size: cover;
+    background-attachment: fixed;
     color: #f1f5f9;
 }
 
@@ -40,7 +50,7 @@ body[data-theme="dark"] {
     max-width: 90%;
     padding: 40px;
     position: absolute;
-    top: 50%;
+    top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
 
@@ -60,7 +70,7 @@ body[data-theme="light"] .container {
 
 /* DARK */
 body[data-theme="dark"] .container {
-    background: rgba(30, 41, 59, 0.6);
+    background: rgba(46, 17, 15, 0.549);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
 }
 
@@ -180,12 +190,12 @@ body[data-theme="dark"] .container button {
 
 /* LIGHT QR BOX */
 body[data-theme="light"] #imgBox {
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(220, 213, 213, 0.124);
 }
 
 /* DARK QR BOX */
 body[data-theme="dark"] #imgBox {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(74, 23, 23, 0.565);
 }
 
 /* =========================
@@ -347,7 +357,7 @@ body[data-theme="dark"] .theme-switcher button {
 
 .switch {
     position: relative;
-    width: 70px;
+    width: 75px;
     /* increased width */
     height: 28px;
 }
@@ -432,7 +442,7 @@ body[data-theme="dark"] {
 
 @keyframes bgZoom {
     0% {
-        background-size: 100%;
+        background-size: cover;
     }
 
     100% {
@@ -502,4 +512,52 @@ input:checked+.slider {
     color: white;
     cursor: pointer;
     transform: scale(1.02);
+}
+
+#scanResult {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+
+/* =========================
+   FLOATING THEME PANEL
+========================= */
+
+.theme-panel {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 10px 16px;
+    border-radius: 20px;
+
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    background: rgba(255, 255, 255, 0.1);
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+
+    z-index: 1000;
+
+    transition: all 0.3s ease;
+}
+
+.theme-panel:hover {
+    transform: translateY(-3px) scale(1.02);
+}
+body[data-theme="dark"] .theme-panel {
+    background: rgba(30, 41, 59, 0.5);
+}
+.theme-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    cursor: pointer;
 }
